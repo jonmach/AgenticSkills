@@ -11,6 +11,12 @@ skills/
     ...           # optional scripts, references, assets
 ```
 
+## Skills
+
+| Skill | Description |
+|---|---|
+| [critical-lens](skills/critical-lens/) | Sceptical senior-analyst scrutiny of claims, case studies and reports, as a short gut check or a long layered report. |
+
 ## Adding a skill
 
 1. Create `skills/<skill-name>/`.
