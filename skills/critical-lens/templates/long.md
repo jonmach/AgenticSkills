@@ -1,6 +1,6 @@
 # Long format template (layered report)
 
-Copy the skeleton below. **Work order: complete Part 2 first, then write Part 1, then place Part 1 at the top.** Delete this header and the italic guidance lines before delivering.
+Copy the skeleton below. **Work order: complete Part 2 first, then write Part 1, then place Part 1 at the top.** Delete this header and the italic guidance lines before delivering. Confidence labels follow the anchors in `SKILL.md` (high = verified at primary source; medium = partly verified or narrow; low = text alone).
 
 ---
 
@@ -56,6 +56,8 @@ Copy the skeleton below. **Work order: complete Part 2 first, then write Part 1,
 | | | first-party / partner / sponsored / independent / unverified | | |
 
 ## 4. Claim-by-claim analysis
+<Material claims: a full block each. Minor claims: one line each, so none is silently dropped.>
+
 ### A. <Claim 1>
 - **Consistency:**
 - **Source and affiliation:**
@@ -107,5 +109,7 @@ Copy the skeleton below. **Work order: complete Part 2 first, then write Part 1,
 - [ ] Inferences are labelled as inferences.
 - [ ] Every factual statement is traceable to something actually retrieved.
 - [ ] Earlier statements in the conversation that the work overturned are listed under Corrections.
+- [ ] Verdict and every confidence label match the anchors in `SKILL.md`, with the driver named.
+- [ ] Every claim in the claims table appears in the analysis; minor ones may be one line, none are omitted.
 - [ ] Every cited source has an external URL.
 - [ ] Verification log states what was not checked.

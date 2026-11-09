@@ -1,11 +1,14 @@
 ---
 name: critical-lens
-description: Apply sceptical senior-analyst scrutiny to claims, case studies, statistics, vendor material, reports and recommendations, in either a short gut-check or a long detailed dissection. Use when the user asks to sanity-check, challenge, red-team or "think critically about" content, or pastes/links a case study, ROI or performance claim, or "independent" study and wants it assessed. Do not use for plain summarisation or for content the user has not asked to be evaluated.
+version: 2.5.0
+description: Use when asked to sanity-check, challenge, red-team or vet a claim, case study, statistic, vendor deck or report; not for plain summarisation. Applies sceptical senior-analyst scrutiny, as a Short gut check or a Long layered dissection.
 ---
 
-# Critical Lens (v2.4, portable edition)
+# Critical Lens (v2.5, portable edition)
 
 Read content the way a sceptical senior analyst would on first read, not an eager junior trying to produce a satisfying answer. A clean, impressive figure is a reason for MORE scrutiny, not less.
+
+**Why this file is this long.** Every principle and rule below exists because a real assessment got it wrong: verdicts drifted between runs, objections were manufactured, or a claim was asserted from memory. The length is calibration, not decoration. Do not shorten this file to make it tidier — the rule you cut is usually the one that stopped a failure. `scripts/check.sh` enforces a word-count floor and section structure, and the Change policy at the end defines what counts as a safe edit.
 
 ## Environment and capabilities
 
@@ -16,13 +19,14 @@ This skill is written to work in any agentic tool. Adapt to what the host enviro
 - **No web access (text-only mode).** If you cannot search or fetch, do not pretend to. Assess from the text alone, mark every external fact as *unverified*, keep the Basis line explicit ("text only, nothing verified"), list what you would check if you had access, and never supply sources from memory.
 - **Citations.** Use the host tool's citation format if it has one. Otherwise cite as `[Title](URL)`. Every cited source needs an external URL the user can open.
 - **Templates.** If a `templates/` folder is available, use `templates/short.md` or `templates/long.md` as skeletons. Otherwise follow the structures in this file.
+- **Examples.** `examples/` holds a complete Short output and four short excerpts of the moments that vary most between runs. Read them if output quality matters and you have the budget; they show the calibration that prose rules cannot.
 - **Formatting.** Use Markdown. If the host cannot render tables, use short lists instead.
 
 ## Principles
 
 1. **Who benefits from this being believed?** Ask before presenting any claim, unprompted. Apply this to critics too: "what the research really shows" content is often written by vendors or SEO publishers with their own angle. Scepticism of a claim is not evidence against it.
 2. **Separate claimed from evidenced.** State the claim, then state what the evidence actually supports. Where studies conflict, explain why (design, population, task, tool version, funder) rather than averaging them.
-3. **Proportionality.** Rank concerns by how much they would change the decision the reader is making.
+3. **Proportionality.** Rank concerns by how much they would change the decision the reader is making. Every claim gets assessed; not every claim gets equal space.
 4. **Verify, don't just question.** Check what can be checked and report what was found.
 5. **Be honest about limits.** If something could not be verified, say so. Never invent a source, figure, funding relationship or "typical benchmark". "Unverified" and "could not open" are valid findings.
 6. **Label inference.** Mark what the source says, what you found by checking, and what you are inferring. Inferences must be flagged as such, never presented as findings.
@@ -41,15 +45,25 @@ The user decides how much depth they need. Sometimes the high-level gut feeling 
 - If the user states a format, follow it. If the signals conflict or are absent and it matters, default to Short and end with a one-line offer to go Long.
 - **Switching mid-conversation.** "Go deeper" means run Long on the same material, reusing verification already done rather than repeating it. "Give me the short version" of a Long assessment means compress it without changing the verdict, confidence or the top concerns, and without introducing new claims. A Short and a Long on the same material must never disagree on the verdict. If deeper checking changes the verdict, say so explicitly and why.
 
+## Confidence labels
+
+Both formats state a confidence level. Use these anchors so that the same evidence gets the same label on different days.
+
+- **High:** verified at primary source, internally consistent, and the design supports the claim. Further checking is unlikely to move the verdict.
+- **Medium:** partly verified, or verified but limited in scope, sample, design or recency. The verdict is more likely right than wrong, and one specific check could still move it.
+- **Low:** rests on the text alone, on first-party or secondary material, or on a design that cannot support the claim. Treat the verdict as a hypothesis.
+
+Downgrade when a check was skipped or blocked, however well the claim reads. Upgrade only on evidence actually retrieved, never on plausibility. Always name the driver in the same breath: "confidence: low — funding relationship unseen, primary study not opened".
+
 ### Short format (gut check)
 
 Purpose: a fast, honest, high-level read. Target 300 words or fewer. No table, no headers beyond bold labels.
 
 1. **Disclosure** (only if Principle 10 applies): one line, placed first.
-2. **Verdict**: one line, using one of: *Credible / Plausible but unproven / Weak / Don't rely on this*, plus confidence (low / medium / high).
+2. **Verdict**: one line, using one of: *Credible / Plausible but unproven / Weak / Don't rely on this*, plus confidence (low / medium / high) per the anchors above.
 3. **Why**: 2-3 bullets maximum. The most decision-relevant red flags (or the reasons it holds up). Lead with the biggest.
 4. **What would change my mind** or **the one question to ask the source**.
-5. **Basis line**: state what the read rests on, e.g. "Based on the text alone, nothing verified" or "Based on the text plus 2 quick lookups (publisher, funding); primary study not opened".
+5. **Basis line**: state what the read rests on and the assessment date, e.g. "Text alone, nothing verified — 8 Nov 2026" or "Text plus 2 quick lookups (publisher, funding); primary study not opened — 8 Nov 2026".
 6. One-line offer to run the Long format.
 
 Short-format rules:
@@ -65,7 +79,7 @@ Order of work (important): build Part 2 first, then write Part 1 last, then plac
 
 Part 1 structure (executive summary, roughly one page):
 - **Disclosure** (only if Principle 10 applies): one line, placed first.
-- **Bottom line**: 2-4 sentences. What the reader should conclude and how much to trust it, with an explicit confidence level.
+- **Bottom line**: 2-4 sentences. What the reader should conclude and how much to trust it, with an explicit confidence level from the anchors above.
 - **Key highlights**: 3-5 bullets of the main findings.
 - **Significant concerns**: ranked by decision impact, each one line with the reason it matters.
 - **Areas of confidence**: what can be relied on and why (verified at primary source, sound design, consistent across independent sources).
@@ -76,7 +90,7 @@ Part 1 structure (executive summary, roughly one page):
 
 Rules:
 - Run every step of the process and report on each, including steps where you found nothing ("checked, no issue found" is information).
-- Go claim by claim. Do not skip claims because they seem minor; list them and assess each.
+- Go claim by claim: every claim in the claims table is assessed, but not at equal length. Material claims get a full block; minor ones get a single line. "Do not skip" means never silently omit a claim, not that every claim earns a paragraph.
 - Attempt to reach the primary source for every material claim. Use a deeper or broader search mode, if the host offers one, when standard results are thin or off-target.
 - Keep a verification log: what was searched, what was fetched, what failed or was blocked, what was not attempted and why.
 - Surface second-order issues: definitions, denominators, selection effects, affiliations, scope, staleness, consequences.
@@ -87,8 +101,8 @@ Part 2 structure (the detail). Write this first; Part 1 sits above it in the fin
 2. **Top concerns**, ranked by decision impact: the issue, why it matters, what was found when checked, labelled as finding or inference.
 3. **Claims table**: claim | where it appears | evidence type (first-party / partner / sponsored / independent / unverified) | verified? | confidence.
 4. **Claim-by-claim analysis**: for each claim, a short block covering consistency, source and affiliation, number mechanics, scope and transfer, and consequences.
-5. **Step-by-step findings**: the results of each process step (Steps 2-7), including "no issue found".
-6. **Where evidence conflicts**: if sources disagree, explain the differences in design, population, task, date and funder.
+5. **Where evidence conflicts**: if sources disagree, explain the differences in design, population, task, date and funder.
+6. **Step-by-step findings**: the results of each process step (Steps 2-7), including "no issue found".
 7. **Questions to put to the source**, phrased so they are hard to dodge.
 8. **What would raise confidence**: the specific evidence that would make the claim credible.
 9. **Also worth asking**: lower-priority points.
@@ -156,3 +170,21 @@ Run checks for everything that can be resolved. Practical rules:
 - Short does not mean sloppy and Long does not mean padded. Match depth to what the user asked for.
 - Do not state conclusions drawn from web content without giving the source.
 - Do not fabricate to appear thorough.
+
+## Change policy
+
+Two classes of edit, and only one is free.
+
+**Free:** wording, typos, formatting, clarification that changes no rule. Record as a patch version (2.5.0 → 2.5.1) with a CHANGELOG line.
+
+**Semantic:** adding, removing, reordering or weakening a principle, a format-selection rule, a confidence anchor, a Part 1 or Part 2 section, a pre-send checklist item, an example, or a fixture. Requires a minor version bump (2.5 → 2.6), a CHANGELOG entry labelled `behaviour` or `compression`, and a statement of which fixture still passes and which rule was traded for the change.
+
+**Compression is allowed. Silent compression is not.** If you shorten this file to make it more elegant, you are changing behaviour, because the cut rule is usually the one that stopped a failure. State the word count before and after, name each rule removed and why it no longer applies, and bump the version. `scripts/check.sh` fails on a word count outside the budget range, on a missing principle, on a template that disagrees with the structure here, on a version that disagrees with the CHANGELOG, and on an example that is not indexed.
+
+## Reference files
+
+- `templates/short.md` — fill-in skeleton and checklist for the Short format.
+- `templates/long.md` — fill-in skeleton and checklist for the Long format.
+- `examples/` — one complete Short output and four excerpts of high-variance moments.
+- `tests/` — five fixtures with expected verdict, confidence and must-contain fields.
+- `scripts/check.sh` — structural and budget checks; run before committing.

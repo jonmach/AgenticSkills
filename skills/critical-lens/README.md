@@ -1,4 +1,4 @@
-# critical-lens: portable skill package (v2.4)
+# critical-lens: portable skill package (v2.5)
 
 A reusable instruction set that makes an AI agent apply sceptical senior-analyst scrutiny to claims, case studies, statistics, vendor material and reports. It offers two output formats: a **Short** gut check and a **Long** layered report (executive summary on top, full evidence below).
 
@@ -6,9 +6,12 @@ A reusable instruction set that makes an AI agent apply sceptical senior-analyst
 
 | File | Purpose |
 |---|---|
-| `SKILL.md` | The skill itself: principles, format selection, process, tone. Frontmatter (`name`, `description`) followed by Markdown instructions. |
+| `SKILL.md` | The skill itself: principles, format selection, confidence anchors, process, change policy. Frontmatter (`name`, `version`, `description`) followed by Markdown instructions. |
 | `templates/short.md` | Fill-in skeleton and pre-send checklist for the Short format. |
 | `templates/long.md` | Fill-in skeleton and pre-send checklist for the Long format. |
+| `examples/` | One complete Short output and four excerpts of the moments that vary most between runs. |
+| `tests/` | Five fixtures with expected verdict, confidence and content checks. |
+| `scripts/check.sh` | Structural and word-budget checks. Run before committing. |
 | `CHANGELOG.md` | Version history. |
 | `README.md` | This file. |
 
@@ -17,7 +20,7 @@ A reusable instruction set that makes an AI agent apply sceptical senior-analyst
 The package is plain Markdown with no tool-specific syntax in the instructions. How you load it depends on the tool.
 
 1. **Tools that load skill folders** (a directory containing `SKILL.md` with `name` and `description` frontmatter): copy the whole `critical-lens/` folder into the tool's skills location. The `description` field is what tells the tool when to trigger the skill.
-2. **Tools that take a single instruction file or custom instructions / system prompt**: paste the body of `SKILL.md` (everything below the frontmatter). If there is a size limit, paste `SKILL.md` alone and omit the templates; the structures are also described inside `SKILL.md`.
+2. **Tools that take a single instruction file or custom instructions / system prompt**: paste the body of `SKILL.md` (everything below the frontmatter). If there is a size limit, paste `SKILL.md` alone and leave out `templates/`, `examples/` and `tests/`; the structures are also described inside `SKILL.md`.
 3. **Tools with per-project or per-repo rules files**: add the body of `SKILL.md` as a rules file, and keep the `description` text as the trigger note if the tool supports one.
 
 Check your tool's own documentation for exact paths and file names. This package has not been verified against any specific tool's folder layout.
@@ -42,19 +45,26 @@ Check your tool's own documentation for exact paths and file names. This package
 - [ ] Decide the default format for your users. The skill defaults to Short for a single claim and Long for multiple claims or significant decisions; edit "Selecting the format" if you want a different default.
 - [ ] Check the disclosure principle (Principle 10) reads correctly for the assistant in the new tool. It asks the assistant to disclose when the content concerns its own vendor, model or product, or a competitor.
 
-## Suggested tests
+## Testing it
 
-Run these before relying on the skill in a new tool.
+`tests/` holds five fixtures: a vendor claim with a headline number, a claim that should hold up, a text-only run, a format switch, and a superseded finding. Each states the expected verdict, the expected confidence, and what the output must and must not contain. Run them in a fresh conversation each, because verdict drift between runs is the failure they exist to catch. `tests/README.md` has the procedure.
 
-1. **Vendor claim with a headline number.** Paste or link a vendor case study with a "X% improvement" claim. Expected: Short gives a verdict, 2-3 flags and a basis line; Long includes an internal-consistency check, an affiliation check and a verification log.
-2. **A claim that should hold up.** Use a well-evidenced, independently replicated finding. Expected: a "Credible" or "Plausible" verdict with no manufactured objections.
-3. **Pasted claim, no links, no web access.** Expected: text-only mode, everything external marked unverified, explicit offer of what to check, no invented sources.
-4. **Format switching.** Ask for a Short, then "go deeper", then "short version". Expected: the verdict never changes silently between formats, and the Long version reuses earlier checks.
-5. **Superseded evidence.** Use a study that its own authors have since revised. Expected: the recency check finds the update and the summary says so.
+## Keeping the skill honest
+
+This file is deliberately longer than the usual guidance for skill files (~3,200 words, with templates, examples and fixtures loading separately). Every principle corresponds to a failure that was observed. The risk is not that it is too long; it is that someone later trims it to look tidy, deleting the rule that stopped the failure.
+
+Three things guard against that:
+
+- **A budget band, not a ceiling.** `scripts/check.sh` fails if `SKILL.md` drops below 3,000 words or rises above 3,400.
+- **Structural checks.** The same script fails on a missing principle, a template that disagrees with the structure in `SKILL.md` (the v2.4 defect this version fixes), a version that disagrees with the CHANGELOG, an unindexed example, or a malformed fixture.
+- **A Change policy** in `SKILL.md`: compression is allowed, silent compression is not. A rule removed or weakened needs a version bump and a CHANGELOG entry naming what was traded.
+
+Run `skills/critical-lens/scripts/check.sh` by hand, or enable the hook once with `git config core.hooksPath .githooks`.
 
 ## Known limitations
 
-- Versions 2.2 and 2.3 have only been exercised on one worked example (AI coding productivity studies). Treat results on other domains as untested.
+- The five fixtures have not yet been run end-to-end against a real model at v2.5; they are structurally valid and each states a pass condition, but no results are recorded yet. Treat v2.5 output quality as untested until a fixture run is logged in the CHANGELOG.
+- Earlier confidence labelling is superseded: assessments produced under v2.4 or below used undefined low/medium/high labels and are not comparable with v2.5 output.
 - The Long format's executive summary may exceed one page on complex topics.
 - The Short format's 300-word target can still be tight when the content has many claims; the skill's answer is to rank and report only the top concerns.
 - The skill improves the process of scrutiny; it cannot make an agent's retrieved sources reliable. Check the verification log.
