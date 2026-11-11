@@ -16,11 +16,12 @@ skills/
 | Skill | Description |
 |---|---|
 | [critical-lens](skills/critical-lens/) | Sceptical senior-analyst scrutiny of claims, case studies and reports, as a short gut check or a long layered report. |
+| [ai-claim-checker](skills/ai-claim-checker/) | Learner-side check on AI-generated explanations: the learner names one place it could be wrong, one thing to verify and one source to consult, building epistemic vigilance. |
 
 ## Adding a skill
 
 1. Create `skills/<skill-name>/`.
-2. Add a `SKILL.md` with frontmatter (`name`, `version`, `description`) followed by the instructions.
+2. Add a `SKILL.md` with frontmatter (`name`, `version`, `description`) followed by the instructions. Additional fields are allowed: `ai-claim-checker` carries the agent-skills standard schema as well, with domain, audience and evidence fields.
 3. Include any supporting files the skill needs alongside it: `templates/` for skeletons, `examples/` for worked output, `tests/` for fixtures, `scripts/` for checks.
 
 ## Checks
@@ -31,7 +32,7 @@ Skills may ship a check script. Run it before committing, or enable the shared h
 git config core.hooksPath .githooks
 ```
 
-The hook runs `skills/<name>/scripts/check.sh` for any skill touched by the commit. `critical-lens` uses its checks to hold a word budget and section structure, so the skill cannot be silently trimmed to suit a shorter-is-better norm; its `SKILL.md` "Change policy" section explains what counts as a safe edit.
+The hook currently covers `critical-lens` only: it fires when a commit touches `skills/critical-lens/` and runs that skill's `scripts/check.sh`. The `skills/<name>/scripts/check.sh` pattern is the intended generalisation, not yet wired up, and `ai-claim-checker` ships no check script. `critical-lens` uses its checks to hold a word budget and section structure, so the skill cannot be silently trimmed to suit a shorter-is-better norm; its `SKILL.md` "Change policy" section explains what counts as a safe edit.
 
 
 ## License
